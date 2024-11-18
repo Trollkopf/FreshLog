@@ -28,7 +28,7 @@ FreshLog is an application designed for restroom cleaning management. It allows 
 
 ## Requirements
 
-- **PHP** >= 7.4
+- **PHP** >= 8.2
 - **Composer** for dependency management
 - **MySQL** or any compatible database
 - A web server such as **Apache** or **Nginx**
