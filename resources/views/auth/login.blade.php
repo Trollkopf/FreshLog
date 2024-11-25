@@ -27,4 +27,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
     </form>
+
+    <p class="mt-2"> <a href="{{ route('password.request') }}">He olvidado la contraseña</a></p>
 @endsection
