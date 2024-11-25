@@ -89,4 +89,4 @@ Artisan::command('send:daily-cleaning-report', function () {
     $this->info('Enviando informe diario...');
 });
 
-Schedule::command('send:daily-cleaning-report')->hourly();
+Schedule::command('send:daily-cleaning-report')->everyMinute();
