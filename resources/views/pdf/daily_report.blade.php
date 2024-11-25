@@ -12,6 +12,16 @@
 
         h2 {
             text-align: center;
+            margin-top: 8px;
+        }
+
+        h3 {
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        img {
+            align-content: center;
             margin-top: 20px;
         }
 
@@ -40,7 +50,9 @@
 </head>
 
 <body>
+    <img src="file://{{ public_path('images/logo.png') }}" alt="logo" width="100px" />
     <h2>Informe Diario de Registros de Limpieza</h2>
+    <h3>{{ config('app.location') }}</h3>
     <p>Fecha: {{ \Carbon\Carbon::today()->format('d/m/Y') }}</p>
     <table>
         <thead>

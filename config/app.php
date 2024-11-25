@@ -2,6 +2,9 @@
 
 return [
 
+     // PERSONALIZED ENVIROMENT KEYS
+     'place' => env('APP_PLACE', 'Not indicated'),
+     'location' => env('APP_LOCATION', 'Not specified'),
     /*
     |--------------------------------------------------------------------------
     | Application Name

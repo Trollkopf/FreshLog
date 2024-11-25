@@ -9,9 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
-
-
     <title>@yield('title', 'FreshLog')</title>
+    <style>
+        @media (max-width: 576px) {
+            .navbar-brand span {
+                display: block;
+                font-size: 0.9rem; /* Ajusta el tamaño de texto si es necesario */
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -19,35 +25,44 @@
         <div class="container d-flex justify-content-between align-items-center">
             <!-- Logo alineado a la izquierda -->
             <a class="navbar-brand" href="/">
-                <img src="{{ asset('images/logonav.png') }}" alt="logo" height="50px" class="rounded">
+                <img src="{{ asset('images/logonav.png') }}" alt="logo" height="50px" class="rounded mb-2">
+                <span class="ms-2">{{ config('app.place')}} - Diario de limpiezas</span>
+                <span class="text-primary ms-2">Cleaning Schedule</span>
             </a>
 
-            <!-- Botones alineados a la derecha -->
+            <!-- Menú hamburguesa para usuario registrado -->
             @if (Auth::check())
-                <div class="d-flex align-items-center">
-                    <!-- Botón de Configuración -->
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-link text-light p-0 me-3"
-                        title="Configuración">
-                        <i class="fas fa-home" style="font-size: 1.5rem;"></i>
-                    </a>
-                    <div class="d-flex align-items-center">
-                        <!-- Botón de Configuración -->
-                        <a href="{{ route('configurations.index') }}" class="btn btn-link text-light p-0 me-3"
-                            title="Configuración">
-                            <i class="fas fa-cog" style="font-size: 1.5rem;"></i>
-                        </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#userMenu"
+                    aria-controls="userMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                        <!-- Botón de Cerrar Sesión -->
-                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn btn-link text-light p-0" title="Cerrar Sesión">
-                                <i class="fas fa-sign-out-alt" style="font-size: 1.5rem;"></i>
-                            </button>
-                        </form>
-                    </div>
+                <div class="collapse navbar-collapse" id="userMenu">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a href="{{ route('admin.dashboard') }}" class="nav-link text-light" title="Dashboard">
+                                <i class="fas fa-home"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('configurations.index') }}" class="nav-link text-light" title="Configuración">
+                                <i class="fas fa-cog"></i> Configuración
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-link nav-link text-light" title="Cerrar Sesión">
+                                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             @endif
         </div>
     </nav>
+
     <div class="container mt-4">
         @yield('content')
     </div>
