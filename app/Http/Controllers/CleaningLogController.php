@@ -29,18 +29,29 @@ class CleaningLogController extends Controller
 
     public function store(Request $request)
     {
-        // Validamos que el user_id esté presente en la solicitud
         $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
 
-        // Creamos el registro de limpieza
-        $log = new CleaningLog();
-        $log->bathroom_id = 'ID_DEL_BAÑO'; // Puedes ajustar esto para obtener el ID dinámicamente más adelante
-        $log->user_id = $request->user_id;
-        $log->cleaned_at = Carbon::now(); // Timestamp actual
-        $log->save();
+        $userId = $request->input('user_id');
+        $now = Carbon::now();
 
-        return redirect()->back()->with('success', 'Registro de limpieza guardado.');
+        $lastRecord = CleaningLog::latest('cleaned_at')->first();
+
+        if ($lastRecord && $lastRecord->cleaned_at && $now->diffInMinutes(Carbon::parse($lastRecord->cleaned_at)) < 30) {
+            return response()->json([
+                'error' => true,
+                'lastUserName' => $lastRecord->user->name,
+                'lastRecordTime' => Carbon::parse($lastRecord->cleaned_at)->format('H:i:s'),
+            ]);
+        }
+
+        CleaningLog::create([
+            'bathroom_id' => 'ID_DEL_BAÑO',
+            'user_id' => $userId,
+            'cleaned_at' => $now,
+        ]);
+
+        return response()->json(['success' => true]);
     }
 }
