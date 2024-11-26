@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 use App\Models\CleaningLog;
 use App\Mail\DailyCleaningReport;
@@ -9,11 +9,29 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
 
 Artisan::command('send:daily-cleaning-report', function () {
-    // Verificar si las tablas necesarias están disponibles
-    if (!Schema::hasTable('configurations') || !Schema::hasTable('emails') || !Schema::hasTable('cleaning_logs')) {
-        $this->info('Las tablas necesarias no están disponibles. Abortando el comando.');
+    // Verificar si las tablas están disponibles
+    if (!Schema::hasTable('configurations')) {
+        $this->info('La tabla de configuraciones no está disponible. Abortando el comando.');
         return;
     }
+
+    // Obtener la hora de reporte configurada
+    $reportTime = Configuration::where('key', 'report_time')->value('value');
+
+    if (!$reportTime) {
+        $this->info('La hora de reporte no está configurada. Abortando el comando.');
+        return;
+    }
+
+    // Verificar si la hora actual coincide con la hora configurada
+    $currentHour = Carbon::now()->format('H:i');
+    if ($currentHour !== $reportTime) {
+        $this->info('No es la hora configurada para enviar el informe.');
+        return;
+    }
+
+    // Aquí continúa la lógica para enviar el informe diario
+    $this->info('Enviando informe diario...');
 
     // Obtener horarios de apertura y cierre desde la base de datos
     $openingTime = Configuration::where('key', 'opening_time')->value('value');
@@ -63,30 +81,6 @@ Artisan::command('send:daily-cleaning-report', function () {
     $this->info('Informe diario de registros de limpieza enviado exitosamente.');
 });
 
-Artisan::command('send:daily-cleaning-report', function () {
-    // Verificar si las tablas están disponibles
-    if (!Schema::hasTable('configurations')) {
-        $this->info('La tabla de configuraciones no está disponible. Abortando el comando.');
-        return;
-    }
 
-    // Obtener la hora de reporte configurada
-    $reportTime = Configuration::where('key', 'report_time')->value('value');
-
-    if (!$reportTime) {
-        $this->info('La hora de reporte no está configurada. Abortando el comando.');
-        return;
-    }
-
-    // Verificar si la hora actual coincide con la hora configurada
-    $currentHour = Carbon::now()->format('H:i');
-    if ($currentHour !== $reportTime) {
-        $this->info('No es la hora configurada para enviar el informe.');
-        return;
-    }
-
-    // Aquí continúa la lógica para enviar el informe diario
-    $this->info('Enviando informe diario...');
-});
 
 Schedule::command('send:daily-cleaning-report')->everyMinute();
