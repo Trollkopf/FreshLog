@@ -7,6 +7,7 @@ use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,7 +16,7 @@ class AdminController extends Controller
 
     public function index()
     {
-        $users = User::all();
+        $users = User::where('id', '!=', Auth::id())->get(); // Excluir el usuario autenticado
         return view('admin.dashboard', compact('users'));
     }
 
@@ -95,14 +96,15 @@ class AdminController extends Controller
     }
 
     // Método para cambiar el rol de usuario a admin
-    public function makeAdmin($id)
+    public function changeRole(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
-        // Cambiar el rol del usuario a 'admin'
-        $user->role = 'admin';
+        $newRole = ($user->role === 'worker') ? 'manager' : 'worker';
+
+        $user->role = $newRole;
         $user->save();
 
-        return redirect()->route('admin.dashboard')->with('success', 'Usuario ahora es administrador.');
+        return redirect()->route('admin.dashboard')->with('success', "Usuario ahora es $newRole.");
     }
 }

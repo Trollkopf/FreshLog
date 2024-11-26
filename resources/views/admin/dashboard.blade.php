@@ -70,8 +70,10 @@
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Acciones</th>
+                <th>Rol</th>
             </tr>
         </thead>
+        <tbody>
         <tbody>
             @foreach ($users as $user)
                 <tr>
@@ -80,26 +82,37 @@
                     <td>
                         @if ($user->role !== 'admin')
                             <!-- Botón para eliminar usuario -->
-                            <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
+                            @if ($user->role !== 'manager')
+                                <form action="{{ route('admin.deleteUser', $user->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            @endif
 
-                            <!-- Botón para cambiar a admin -->
-                            <form action="{{ route('admin.makeAdmin', $user->id) }}" method="POST"
+                            <!-- Botón para cambiar el rol -->
+                            <form action="{{ route('admin.changeRole', $user->id) }}" method="POST"
                                 style="display:inline;">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="btn btn-primary btn-sm" title="Hacer Admin">
+                                <button type="submit" class="btn btn-primary btn-sm" title="Cambiar Rol">
                                     <i class="fas fa-user-shield"></i>
                                 </button>
                             </form>
                         @else
                             <span class="badge bg-success">Admin</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if ($user->role === 'admin')
+                            <span class="badge bg-success">Administrador</span>
+                        @elseif($user->role === 'manager')
+                            <span class="badge bg-warning">Gerente</span>
+                        @else
+                            <span class="badge bg-secondary">Trabajador</span>
                         @endif
                     </td>
                 </tr>

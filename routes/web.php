@@ -14,12 +14,12 @@ Route::get('/', [WelcomeController::class, 'index'])->name('home');
 Route::get('/clean', [CleaningLogController::class, 'index']);
 Route::post('/clean', [CleaningLogController::class, 'store']);
 
-Route::middleware(['auth', '\App\Http\Middleware\AdminMiddleware::class'])->group(function () {
+Route::middleware(['auth', '\App\Http\Middleware\RoleMiddleware::class'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::post('/admin/users', [AdminController::class, 'storeUser'])->name('admin.storeUser');
     Route::post('/admin/store-password', [AdminController::class, 'storePassword'])->name('admin.storePassword');
     Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.deleteUser');
-    Route::patch('/admin/users/{id}/make-admin', [AdminController::class, 'makeAdmin'])->name('admin.makeAdmin');
+    Route::patch('/admin/users/{id}/make-admin', [AdminController::class, 'changeRole'])->name('admin.changeRole');
     Route::post('/admin/change-theme', [AdminController::class, 'changeTheme'])->name('admin.changeTheme');
 
     Route::get('/admin/configurations', [ConfigurationController::class, 'index'])->name('configurations.index');

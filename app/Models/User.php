@@ -50,4 +50,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(CleaningLog::class);
     }
+
+    protected $attributes = [
+        'role' => 'worker', // Valor por defecto: trabajador
+    ];
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isManager()
+    {
+        return $this->role === 'manager';
+    }
+
+    public function isWorker()
+    {
+        return $this->role === 'worker';
+    }
 }
