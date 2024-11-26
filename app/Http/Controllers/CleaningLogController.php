@@ -15,15 +15,15 @@ class CleaningLogController extends Controller
     {
         // Obtener la contraseña almacenada en la configuración
         $storedPassword = Setting::where('key', 'operario_password')->value('value');
-    
+
         $password = $request->input('password');
-    
+
         // Verificar la contraseña
         if ($storedPassword && Hash::check($password, $storedPassword)) {
             $users = User::where('role', '!=', 'admin')->get();
             return view('cleaning.index', compact('users'));
         }
-    
+
         return redirect()->back()->with('error', 'Contraseña incorrecta.');
     }
 
@@ -38,7 +38,9 @@ class CleaningLogController extends Controller
 
         $lastRecord = CleaningLog::latest('cleaned_at')->first();
 
-        if ($lastRecord && $lastRecord->cleaned_at && $now->diffInMinutes(Carbon::parse($lastRecord->cleaned_at)) < 30) {
+        $lastRecordParsed = Carbon::parse($lastRecord->cleaned_at);
+
+        if ($lastRecordParsed->diffInMinutes(Carbon::parse($now)) < 30) {
             return response()->json([
                 'error' => true,
                 'lastUserName' => $lastRecord->user->name,
