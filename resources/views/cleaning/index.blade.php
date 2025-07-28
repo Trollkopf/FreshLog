@@ -54,12 +54,11 @@
 
 @section('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.clean-btn');
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
             buttons.forEach(button => {
-                button.addEventListener('click', function (e) {
+                button.addEventListener('click', function(e) {
                     e.preventDefault();
 
                     const userId = button.getAttribute('data-user-id');
@@ -74,7 +73,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         body: JSON.stringify({ user_id: userId })
                     })

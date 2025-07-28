@@ -38,9 +38,7 @@ class CleaningLogController extends Controller
 
         $lastRecord = CleaningLog::latest('cleaned_at')->first();
 
-        $lastRecordParsed = Carbon::parse($lastRecord->cleaned_at);
-
-        if ($lastRecordParsed->diffInMinutes(Carbon::parse($now)) < 30) {
+        if ($lastRecord && Carbon::parse($lastRecord->cleaned_at)->diffInMinutes($now) < 30) {
             return response()->json([
                 'error' => true,
                 'lastUserName' => $lastRecord->user->name,
